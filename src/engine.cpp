@@ -71,7 +71,7 @@ void GameEngine::draw_loop()
 	while (draw_enable)
 	{
 		Graphics g(m_screen_buffer);
-		g.Clear(Color(255, 255, 255));
+		g.Clear(Color(75, 182, 238));
 		draw(g);
 		HDC hdc = GetDC(m_hwnd);
 		Graphics g2(hdc);

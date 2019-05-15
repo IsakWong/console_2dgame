@@ -7,3 +7,9 @@
 #pragma comment(lib,"gdiplus.lib")
 
 using namespace Gdiplus;
+
+
+class ImageResource;
+class Resource;
+class Sprite;
+class StaticSprite;

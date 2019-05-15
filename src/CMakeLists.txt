@@ -8,6 +8,8 @@ set(SOURCE_FILES
 	sprite.cpp
 	engine.h
 	engine.cpp
+	resource.h
+	resource.cpp
 	pch.h
 	pch.cpp
 	main.cpp

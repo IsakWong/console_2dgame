@@ -5,35 +5,19 @@
 #include <list>
 #include "math/2d_math.h"
 
-enum class  KeyCode : unsigned int
+int g_keys[] =
 {
-	Q,
-	W,
-	E,
-	R,
-	T,
-	Y,
-	U,
-	I,
-	O,
-	P,
-	A,
-	S,
-	D,
-	F,
-	G,
-	H,
-	J,
-	K,
-	L,
-	Z,
-	X,
-	C,
-	V,
-	B,
-	N,
-	M
+	VK_ESCAPE,
+	VK_UP,
+	VK_DOWN,
+	VK_LEFT,
+	VK_RIGHT,
+	'W',
+	'A',
+	'S',
+	'D',
 };
+
 
 class DrawContext
 {
@@ -79,8 +63,10 @@ private:
 	HWND m_hwnd;
 	Bitmap* m_screen_buffer;
 	DrawContext m_draw_context;
+
 	bool update_enable = true;
 	bool draw_enable = true;
+
 	int m_width;
 	int m_height;
 

@@ -7,26 +7,18 @@
 
 GameEngine* GameEngine::m_instance = nullptr;
 
-LRESULT __stdcall CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
+HHOOK keyboardHook;
+LRESULT CALLBACK KeyboardProc(
+	_In_ int    code,
+	_In_ WPARAM wParam,
+	_In_ LPARAM lParam
+)
 {
-	if (nCode < 0)
-	{
-		return CallNextHookEx(GameEngine::instance()->m_hook, nCode, wParam, lParam);
-	}
-	else if (nCode == HC_ACTION)
-	{
-		LPKBDLLHOOKSTRUCT p = (LPKBDLLHOOKSTRUCT)lParam;
-		if (wParam == WM_KEYDOWN)
-		{
- 			if (p->scanCode == 0x001ef)
-			{
-				PostQuitMessage(0);
-				return 0;
-			}
-		}
-	}
-	return 0;
+	::MessageBox(NULL, "按键了", "caption", 0x00000002L);
+	return CallNextHookEx(keyboardHook, code, wParam, lParam);//第一个参数一般可以为NULL
 }
+
+
 GameEngine * GameEngine::instance()
 {
 	return m_instance != nullptr ? m_instance : m_instance = new GameEngine();
@@ -51,23 +43,24 @@ int GameEngine::init()
 	return 1;
 }
 
+
+#define KEYDOWN(vk_code) ((GetAsyncKeyState(vk_code) & 0x8000) ? 1 : 0)
+#define KEYUP(vk_code) ((GetAsyncKeyState(vk_code) & 0x8000) ? 0 : 1) 
+
 int GameEngine::run()
 {
 	//begin thread
 	draw_thread = new std::thread(&GameEngine::draw_loop, this);
 	update_thread = new std::thread(&GameEngine::update_loop, this);
 	DWORD d = GetCurrentThreadId();
-	m_hook = SetWindowsHookEx(WH_KEYBOARD_LL, (HOOKPROC)KeyboardProc, NULL, 0);
+	keyboardHook = SetWindowsHookEx(WH_KEYBOARD, (HOOKPROC)KeyboardProc, GetModuleHandle(0), GetCurrentThreadId());
+	auto error = GetLastError();
 	MSG msg;
 	while (TRUE)
 	{
-		if (PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE))
+		if (KEYDOWN(VK_ESCAPE))
 		{
-			//有消息
-			if (msg.message == WM_QUIT)
-				break;
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
+			break;
 		}
 	}
 	UnhookWindowsHookEx(m_hook);
